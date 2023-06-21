@@ -30,7 +30,7 @@ function TableRow({ item, onSelectRow }: TableRowProps) {
     }}>
       <div class={cellClass + " w-[250px]"}>{item.key.join(",")}</div>
       <div class={cellClass}>Object</div>
-      <div class={cellClass}>0000001</div>
+      <div class={cellClass}>{item.versionStamp}</div>
     </div>
   );
 }
@@ -38,6 +38,7 @@ function TableRow({ item, onSelectRow }: TableRowProps) {
 interface KvRow {
   key: string[];
   value: any;
+  versionStamp?: string;
 }
 
 interface TableProps extends JSX.HTMLAttributes<HTMLDivElement> {
@@ -75,19 +76,21 @@ export default function Admin(props: AdminProps) {
       value: {
         username: "Kevin",
       },
+      versionStamp: "0000001",
     },
     {
       key: ["users", "admins", "Andy"],
       value: {
         username: "Andy",
       },
+      versionStamp: "0000001",
     },
   ];
 
   const editingKey = ["users", "admins", "Kevin"];
   const editingValue = items.find((item) => {
     return item.key.join(",") === editingKey.join(",");
-  })?.value;
+  });
 
   return (
     <div class="flex flex-col gap-8 w-full">
@@ -111,15 +114,15 @@ export default function Admin(props: AdminProps) {
 
           <div>
             <div class="text-lg">Key</div>
-            <input class={inputClass} type="text" />
+            <input class={inputClass} type="text" value={editingValue?.key} />
           </div>
           <div>
             <div class="text-lg">Version</div>
-            <input class={inputClass} type="text" />
+            <input class={inputClass} type="text" value={editingValue?.versionStamp} />
           </div>
           <div>
             <div class="text-lg">Value</div>
-            <textarea class={inputClass} type="text" value={JSON.stringify(editingValue, null, 2)} />
+            <textarea class={inputClass} type="text" value={JSON.stringify(editingValue?.value, null, 2)} />
           </div>
 
           <div class="flex gap-4">

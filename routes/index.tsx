@@ -1,5 +1,4 @@
 import { Head } from "$fresh/runtime.ts";
-import { useSignal } from "@preact/signals";
 import Admin from "../islands/Admin.tsx";
 
 export default function Home() {
