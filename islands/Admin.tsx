@@ -1,10 +1,11 @@
 import type { Signal } from "@preact/signals";
 import { JSX } from "preact";
+import { useEffect, useState } from "preact/hooks";
 
 interface AdminProps {
   count: Signal<number>;
 }
-const rowClass = "flex flex-row border";
+const rowClass = "flex flex-row border hover:bg-gray-100 cursor-pointer";
 const cellClass =
   "w-[150px] overflow-hidden whitespace-nowrap  border-b-1 border-l-1 px-2 py-1";
 
@@ -20,14 +21,17 @@ function TableHeader() {
 
 interface TableRowProps extends JSX.HTMLAttributes<HTMLDivElement> {
   item: KvRow;
-  onSelectRow : (key:string[]) => void;
+  onSelectRow: (key: string[]) => void;
 }
 
 function TableRow({ item, onSelectRow }: TableRowProps) {
   return (
-    <div class={rowClass} onClick={()=>{
-      onSelectRow(item.key);
-    }}>
+    <div
+      class={rowClass}
+      onClick={() => {
+        onSelectRow(item.key);
+      }}
+    >
       <div class={cellClass + " w-[250px]"}>{item.key.join(",")}</div>
       <div class={cellClass}>Object</div>
       <div class={cellClass}>{item.versionStamp}</div>
@@ -54,7 +58,7 @@ function Table(props: TableProps) {
         return (
           <TableRow
             item={item}
-            onSelectRow={ props.onSelectRow}
+            onSelectRow={props.onSelectRow}
           />
         );
       })}
@@ -69,25 +73,38 @@ export default function Admin(props: AdminProps) {
   const buttonClass =
     "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded";
   const inputClass = "border border-gray-300 bg-white rounded px-3 py-2 w-full";
+  const [query, setQuery] = useState<string[]>(["users", "admin"]);
+  const [items, setItems] = useState<KvRow[]>([]);
 
-  const items: KvRow[] = [
-    {
-      key: ["users", "admins", "Kevin"],
-      value: {
-        username: "Kevin",
-      },
-      versionStamp: "0000001",
-    },
-    {
-      key: ["users", "admins", "Andy"],
-      value: {
-        username: "Andy",
-      },
-      versionStamp: "0000001",
-    },
-  ];
+  useEffect(() => {
+    (async () => {
+      const api = "/kv";
+      const items = await fetch(api + "/list?key=" + query.join(","));
+      const result = await items.json()
+      setItems(result);
 
-  const editingKey = ["users", "admins", "Kevin"];
+      console.log(result)
+    })();
+  }, [query]);
+
+  // const items: KvRow[] = [
+  //   {
+  //     key: ["users", "admins", "Kevin"],
+  //     value: {
+  //       username: "Kevin",
+  //     },
+  //     versionStamp: "0000001",
+  //   },
+  //   {
+  //     key: ["users", "admins", "Andy"],
+  //     value: {
+  //       username: "Andy",
+  //     },
+  //     versionStamp: "0000001",
+  //   },
+  // ];
+
+  const [editingKey, setEditingKey] = useState<string[]>([]);
   const editingValue = items.find((item) => {
     return item.key.join(",") === editingKey.join(",");
   });
@@ -105,7 +122,7 @@ export default function Admin(props: AdminProps) {
           <Table
             items={items}
             onSelectRow={(e) => {
-              console.log(e);
+              setEditingKey(e);
             }}
           />
         </div>
@@ -118,11 +135,19 @@ export default function Admin(props: AdminProps) {
           </div>
           <div>
             <div class="text-lg">Version</div>
-            <input class={inputClass} type="text" value={editingValue?.versionStamp} />
+            <input
+              class={inputClass}
+              type="text"
+              value={editingValue?.versionStamp}
+            />
           </div>
           <div>
             <div class="text-lg">Value</div>
-            <textarea class={inputClass} type="text" value={JSON.stringify(editingValue?.value, null, 2)} />
+            <textarea
+              class={inputClass + " h-64"}
+              type="text"
+              value={JSON.stringify(editingValue?.value, null, 2)}
+            />
           </div>
 
           <div class="flex gap-4">
