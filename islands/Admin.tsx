@@ -18,25 +18,44 @@ function TableHeader() {
   );
 }
 
-function TableRow() {
+interface TableRowProps extends JSX.HTMLAttributes<HTMLDivElement> {
+  item: KvRow;
+}
+
+function TableRow({ item }: TableRowProps) {
   return (
     <div class={rowClass}>
-      <div class={cellClass + " w-[250px]"}>["users", "admins", "Kevin"]</div>
+      <div class={cellClass + " w-[250px]"}>{item.key.join(",")}</div>
       <div class={cellClass}>Object</div>
       <div class={cellClass}>0000001</div>
     </div>
   );
 }
 
-function Table() {
+interface KvRow {
+  key: string[];
+  value: any;
+}
+
+interface TableProps extends JSX.HTMLAttributes<HTMLDivElement> {
+  onSelectRow: (key: string) => void;
+  items: KvRow[];
+}
+
+function Table(props: TableProps) {
   return (
     <div>
       <TableHeader />
-      <TableRow />
-      <TableRow />
-      <TableRow />
-      <TableRow />
-      <TableRow />
+      {props.items.map((item) => {
+        return (
+          <TableRow
+            item={item}
+            onClick={() => {
+              props.onSelectRow(item.key.join(","));
+            }}
+          />
+        );
+      })}
     </div>
   );
 }
@@ -47,11 +66,19 @@ interface AdminProps extends JSX.HTMLAttributes<HTMLDivElement> {
 export default function Admin(props: AdminProps) {
   const buttonClass =
     "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded";
-    const inputClass =
-    "border border-gray-300 bg-white rounded px-3 py-2 focus:outline-none w-full";
+  const inputClass = "border border-gray-300 bg-white rounded px-3 py-2 w-full";
+
+  const items: KvRow[] = [
+    {
+      key: ["users", "admins", "Kevin"],
+      value: {
+        username: "Kevin",
+      },
+    },
+  ];
 
   return (
-    <div class="flex flex-col gap-2 w-full">
+    <div class="flex flex-col gap-8 w-full">
       <div class="flex gap-2 items-center">
         Query [all keys] &gt; users &gt; admins &gt;{" "}
         <input class={inputClass + " w-64"} type="text" />
@@ -60,7 +87,12 @@ export default function Admin(props: AdminProps) {
       </div>
       <div class="flex flex-1 gap-8">
         <div>
-          <Table />
+          <Table
+            items={items}
+            onSelectRow={(e) => {
+              console.log(e);
+            }}
+          />
         </div>
         <div class="flex-1">
           <h2 class="text-xl">Edit Value</h2>
@@ -79,8 +111,8 @@ export default function Admin(props: AdminProps) {
           </div>
 
           <div class="flex gap-4">
-          <button class={buttonClass}>Save</button>
-          <button class={buttonClass}>Cancel</button>
+            <button class={buttonClass}>Save</button>
+            <button class={buttonClass}>Cancel</button>
           </div>
         </div>
       </div>
