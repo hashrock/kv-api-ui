@@ -74,35 +74,35 @@ export default function Admin(props: AdminProps) {
     "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded";
   const inputClass = "border border-gray-300 bg-white rounded px-3 py-2 w-full";
   const [query, setQuery] = useState<string[]>(["users", "admin"]);
-  const [items, setItems] = useState<KvRow[]>([]);
+  // const [items, setItems] = useState<KvRow[]>([]);
 
   useEffect(() => {
     (async () => {
       const api = "/kv";
       const items = await fetch(api + "/list?key=" + query.join(","));
       const result = await items.json();
-      setItems(result);
+      // setItems(result);
 
       console.log(result);
     })();
   }, [query]);
 
-  // const items: KvRow[] = [
-  //   {
-  //     key: ["users", "admins", "Kevin"],
-  //     value: {
-  //       username: "Kevin",
-  //     },
-  //     versionStamp: "0000001",
-  //   },
-  //   {
-  //     key: ["users", "admins", "Andy"],
-  //     value: {
-  //       username: "Andy",
-  //     },
-  //     versionStamp: "0000001",
-  //   },
-  // ];
+  const items: KvRow[] = [
+    {
+      key: ["users", "admins", "Kevin"],
+      value: {
+        username: "Kevin",
+      },
+      versionStamp: "0000001",
+    },
+    {
+      key: ["users", "admins", "Andy"],
+      value: {
+        username: "Andy",
+      },
+      versionStamp: "0000001",
+    },
+  ];
 
   const [editingKey, setEditingKey] = useState<string[]>([]);
   const editingValue = items.find((item) => {
