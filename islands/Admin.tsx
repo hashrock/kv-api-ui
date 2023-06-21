@@ -20,11 +20,14 @@ function TableHeader() {
 
 interface TableRowProps extends JSX.HTMLAttributes<HTMLDivElement> {
   item: KvRow;
+  onSelectRow : (key:string[]) => void;
 }
 
-function TableRow({ item }: TableRowProps) {
+function TableRow({ item, onSelectRow }: TableRowProps) {
   return (
-    <div class={rowClass}>
+    <div class={rowClass} onClick={()=>{
+      onSelectRow(item.key);
+    }}>
       <div class={cellClass + " w-[250px]"}>{item.key.join(",")}</div>
       <div class={cellClass}>Object</div>
       <div class={cellClass}>0000001</div>
@@ -38,7 +41,7 @@ interface KvRow {
 }
 
 interface TableProps extends JSX.HTMLAttributes<HTMLDivElement> {
-  onSelectRow: (key: string) => void;
+  onSelectRow: (key: string[]) => void;
   items: KvRow[];
 }
 
@@ -50,9 +53,7 @@ function Table(props: TableProps) {
         return (
           <TableRow
             item={item}
-            onClick={() => {
-              props.onSelectRow(item.key.join(","));
-            }}
+            onSelectRow={ props.onSelectRow}
           />
         );
       })}
@@ -75,7 +76,18 @@ export default function Admin(props: AdminProps) {
         username: "Kevin",
       },
     },
+    {
+      key: ["users", "admins", "Andy"],
+      value: {
+        username: "Andy",
+      },
+    },
   ];
+
+  const editingKey = ["users", "admins", "Kevin"];
+  const editingValue = items.find((item) => {
+    return item.key.join(",") === editingKey.join(",");
+  })?.value;
 
   return (
     <div class="flex flex-col gap-8 w-full">
@@ -107,7 +119,7 @@ export default function Admin(props: AdminProps) {
           </div>
           <div>
             <div class="text-lg">Value</div>
-            <textarea class={inputClass} type="text" />
+            <textarea class={inputClass} type="text" value={JSON.stringify(editingValue, null, 2)} />
           </div>
 
           <div class="flex gap-4">
