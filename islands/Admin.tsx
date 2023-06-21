@@ -80,10 +80,10 @@ export default function Admin(props: AdminProps) {
     (async () => {
       const api = "/kv";
       const items = await fetch(api + "/list?key=" + query.join(","));
-      const result = await items.json()
+      const result = await items.json();
       setItems(result);
 
-      console.log(result)
+      console.log(result);
     })();
   }, [query]);
 
@@ -129,31 +129,39 @@ export default function Admin(props: AdminProps) {
         <div class="flex-1">
           <h2 class="text-xl">Edit Value</h2>
 
-          <div>
-            <div class="text-lg">Key</div>
-            <input class={inputClass} type="text" value={editingValue?.key} />
-          </div>
-          <div>
-            <div class="text-lg">Version</div>
-            <input
-              class={inputClass}
-              type="text"
-              value={editingValue?.versionStamp}
-            />
-          </div>
-          <div>
-            <div class="text-lg">Value</div>
-            <textarea
-              class={inputClass + " h-64"}
-              type="text"
-              value={JSON.stringify(editingValue?.value, null, 2)}
-            />
-          </div>
+          <form action="/new" method="POST">
+            <div>
+              <div class="text-lg">Key</div>
+              <input
+                class={inputClass}
+                type="text"
+                value={editingValue?.key}
+                name="key"
+              />
+            </div>
+            <div>
+              <div class="text-lg">Version</div>
+              <input
+                class={inputClass}
+                type="text"
+                value={editingValue?.versionStamp}
+              />
+            </div>
+            <div>
+              <div class="text-lg">Value</div>
+              <textarea
+                name="value"
+                class={inputClass + " h-64"}
+                type="text"
+                value={JSON.stringify(editingValue?.value, null, 2)}
+              />
+            </div>
 
-          <div class="flex gap-4">
-            <button class={buttonClass}>Save</button>
-            <button class={buttonClass}>Cancel</button>
-          </div>
+            <div class="flex gap-4">
+              <input type="submit" class={buttonClass} value="Save" />
+              <button class={buttonClass}>Cancel</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>

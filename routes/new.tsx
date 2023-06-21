@@ -8,6 +8,25 @@ interface Data {
   results: string[];
   query: string;
 }
+export const handler: Handlers<Data> = {
+  async GET(req, ctx) {
+    return ctx.render();
+  },
+  async POST(req, ctx) {
+    const form = await req.formData();
+    const value = form.get("value");
+    const key = form.get("key");
+
+    fetch("/kv?key=" + key, {
+      method: "POST",
+      body: JSON.stringify({
+        key: key,
+        value: value,
+      }),
+    });
+    return ctx.render();
+  },
+};
 
 export default function Home() {
   return (
