@@ -17,7 +17,7 @@ export const handler: Handlers<Data> = {
     const value = form.get("value");
     const key = form.get("key");
 
-    fetch("/kv?key=" + key, {
+    fetch("http://localhost:8000/kv?key=" + key, {
       method: "POST",
       body: JSON.stringify({
         key: key,

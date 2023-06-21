@@ -10,11 +10,12 @@ const cellClass =
   "w-[150px] overflow-hidden whitespace-nowrap  border-b-1 border-l-1 px-2 py-1";
 
 function TableHeader() {
+  const add = " text-sm uppercase font-bold text-gray-500"
   return (
     <div class={rowClass}>
-      <div class={cellClass + " w-[250px]"}>Key</div>
-      <div class={cellClass}>Value Type</div>
-      <div class={cellClass}>Version Stamp</div>
+      <div class={cellClass + " w-[250px]" + add}>Key</div>
+      <div class={cellClass + add}>Value Type</div>
+      <div class={cellClass+ add}>Version Stamp</div>
     </div>
   );
 }
@@ -24,13 +25,17 @@ interface TableRowProps extends JSX.HTMLAttributes<HTMLDivElement> {
   onSelectRow: (key: string[]) => void;
 }
 
-function TableRow({ item, onSelectRow }: TableRowProps) {
+function TableRow(props: TableRowProps) {
+  const item = props.item;
+  const onSelectRow = props.onSelectRow;
+
   return (
     <div
-      class={rowClass}
+      class={  props.class + " " + rowClass}
       onClick={() => {
         onSelectRow(item.key);
       }}
+
     >
       <div class={cellClass + " w-[250px]"}>{item.key.join(",")}</div>
       <div class={cellClass}>Object</div>
@@ -47,6 +52,7 @@ interface KvRow {
 
 interface TableProps extends JSX.HTMLAttributes<HTMLDivElement> {
   onSelectRow: (key: string[]) => void;
+  selectedKey?: string;
   items: KvRow[];
 }
 
@@ -55,9 +61,11 @@ function Table(props: TableProps) {
     <div>
       <TableHeader />
       {props.items.map((item) => {
+        const selected = props.selectedKey === item.key.join(",");
         return (
           <TableRow
             item={item}
+            class={selected ? "text-blue-500" : ""}
             onSelectRow={props.onSelectRow}
           />
         );
@@ -97,7 +105,7 @@ export default function Admin(props: AdminProps) {
   //   },
   //   {
   //     key: ["users", "admins", "Andy"],
-  //     value: {
+  //     value: {w
   //       username: "Andy",
   //     },
   //     versionStamp: "0000001",
@@ -111,7 +119,8 @@ export default function Admin(props: AdminProps) {
 
   return (
     <div class="flex flex-col gap-8 w-full">
-      <div class="flex gap-2 items-center">
+      <div class="flex gap-2 items-center border-b-1 pb-4">
+        <img src="/kvapi.svg" alt="" />
         Query [all keys] &gt; users &gt; admins &gt;{" "}
         <input class={inputClass + " w-64"} type="text" />
         <button class={buttonClass}>+</button>
@@ -124,6 +133,7 @@ export default function Admin(props: AdminProps) {
             onSelectRow={(e) => {
               setEditingKey(e);
             }}
+            selectedKey={editingKey.join(",")}
           />
         </div>
         <div class="flex-1">
