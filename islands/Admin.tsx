@@ -1,6 +1,5 @@
 import type { Signal } from "@preact/signals";
 import { JSX } from "preact";
-import { Button } from "../components/Button.tsx";
 
 interface AdminProps {
   count: Signal<number>;
@@ -48,22 +47,22 @@ interface AdminProps extends JSX.HTMLAttributes<HTMLDivElement> {
 export default function Admin(props: AdminProps) {
   const buttonClass =
     "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded";
-  const inputClass =
-    "border border-gray-300 bg-white rounded px-3 py-2 focus:outline-none";
+    const inputClass =
+    "border border-gray-300 bg-white rounded px-3 py-2 focus:outline-none w-full";
 
   return (
     <div class="flex flex-col gap-2 w-full">
-      <div>
+      <div class="flex gap-2 items-center">
         Query [all keys] &gt; users &gt; admins &gt;{" "}
-        <input class="border" type="text" />
+        <input class={inputClass + " w-64"} type="text" />
         <button class={buttonClass}>+</button>
         <button class={buttonClass}>reload</button>
       </div>
-      <div class="flex flex-1">
+      <div class="flex flex-1 gap-8">
         <div>
           <Table />
         </div>
-        <div>
+        <div class="flex-1">
           <h2 class="text-xl">Edit Value</h2>
 
           <div>
@@ -77,6 +76,11 @@ export default function Admin(props: AdminProps) {
           <div>
             <div class="text-lg">Value</div>
             <textarea class={inputClass} type="text" />
+          </div>
+
+          <div class="flex gap-4">
+          <button class={buttonClass}>Save</button>
+          <button class={buttonClass}>Cancel</button>
           </div>
         </div>
       </div>
